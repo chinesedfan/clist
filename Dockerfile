@@ -3,6 +3,9 @@ FROM python:3.10.11 as base
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
+RUN echo "deb http://mirrors.aliyun.com/debian  stable main contrib non-free" > /etc/apt/sources.list
+RUN echo "deb http://mirrors.aliyun.com/debian  stable-updates main contrib non-free" >> /etc/apt/sources.list
+
 RUN apt update -y
 RUN apt install --reinstall build-essential -y
 
@@ -24,7 +27,7 @@ RUN apt install -y lsof htop vim
 # Setup python requirements
 RUN pip install "pip==23.2"
 COPY requirements.txt .
-RUN --mount=type=cache,target=/root/.cache pip install -r requirements.txt
+RUN --mount=type=cache,target=/root/.cache pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 
 # Sentry CLI
 RUN curl -sL https://sentry.io/get-cli/ | SENTRY_CLI_VERSION="2.20.7" sh
